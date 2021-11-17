@@ -42,7 +42,7 @@ void imprime_instrucoes(ALLEGRO_FONT *font);
 
 
 //Desenha o hud atualizado
-void imprime_hud(ALLEGRO_FONT *font, long score, int timer, int diamantes);
+void imprime_hud(ALLEGRO_FONT *font, long score, int timer, int diamantes, struct sprites *spr, int diamond_frame);
 
 
 //Le teclas pressionadas e devolve: 0 tela do jogo, 1 tela de ajuda e 2 cheat ativado

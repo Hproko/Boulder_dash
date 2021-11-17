@@ -50,7 +50,8 @@ void menu(){
 	al_play_sample(sound.menu_music, 1.0, 0.0, 1.0, ALLEGRO_PLAYMODE_LOOP, &menu_sound );
 
 	//inicia addon de ttf e carrega fonte
-	must_init(al_init_ttf_addon(),"font addon");
+	must_init(al_init_font_addon(), "font addon");
+	must_init(al_init_ttf_addon(),"ttf addon");
 	ALLEGRO_FONT* font = al_load_ttf_font("resources/menu.ttf", 20, ALLEGRO_TTF_NO_KERNING);
 
 	//inicia addon de imagem e carrega sprites na estrutura de imagens
@@ -223,9 +224,10 @@ int main_loop(){
 			case ALLEGRO_EVENT_TIMER:
 				//GAME LOGIC
 
-				if(! help_page){
+				if(! help_page && ! done){
 				
-	
+				
+					
  
 					rocks_update(matrizprincipal, frames, &sound, vet_pedras, num_pedras, &info, explosionframes);
 					
@@ -239,13 +241,16 @@ int main_loop(){
 					diamondframe = diamondframe_update(diamondframe, frames);
 				
 					explosionframes = explosionframe_update(explosionframes, frames, matrizprincipal, &info, vet_pedras);
-					
+
+
 					time_update(&time, frames, matrizprincipal, &info, &sound);
 
 					//player morreu
 					if(!info.alive){
 						state = GAMEOVER;
 						done = true;
+					
+
 					}
 
 
@@ -317,7 +322,7 @@ int main_loop(){
 				
 				drawmap(matrizprincipal, &sprites, &info, diamondframe, portalframes, explosionframes, &coord_portal);
 				
-				imprime_hud(font, info.score, time, info.diamantes);
+				imprime_hud(font, info.score, time, info.diamantes, &sprites, diamondframe);
 			
 				disp_post_draw(disp, buffer);
 			
@@ -418,6 +423,7 @@ void win(){
 }
 
 void lose(){
+	sleep(0.7);
 	state = PLAY;
 }
 

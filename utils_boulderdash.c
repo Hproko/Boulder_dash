@@ -113,6 +113,7 @@ void free_samples(struct sounds *sound){
 //Testa se o cheat code foi digitado corretamente
 bool cheat_test(char *cheatcode){
 	
+
 	switch(strlen(cheatcode)){
 		case 1: 
 			if(cheatcode[0] != 'e')
@@ -233,7 +234,9 @@ int get_keys(ALLEGRO_EVENT *event, char *cheatcode){
 
 
 //desenha o hud a cada iteracao do loop principal
-void imprime_hud(ALLEGRO_FONT* font, long score, int timer, int diamantes){
+void imprime_hud(ALLEGRO_FONT* font, long score, int timer, int diamantes, struct sprites *spr, int diamond_frame){
+
+	al_draw_bitmap(spr->diamond[diamond_frame], 50, 0, 0);
 
 	al_draw_textf(font, al_map_rgb_f(0.5,1,1), 75, 0, 0, "%d", diamantes);
 
@@ -291,7 +294,7 @@ void imprime_instrucoes(ALLEGRO_FONT *font){
 	al_draw_textf(font, al_map_rgb_f(1,1,1), 5, 200, 0,
 			" Para  voltar  ao  jogo  pressione  BACKSPACE");
 
-	al_draw_textf(font, al_map_rgb_f(1,1,1), 480, 340, 0, 
+	al_draw_textf(font, al_map_rgb_f(1,1,1), 450, 340, 0, 
 			"Henrique Prokopenko");
 }
 

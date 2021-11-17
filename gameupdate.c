@@ -80,12 +80,18 @@ void all_rocks_go_empty(int **matriz, struct FallingEntity *pedras, int num_pedr
 void rocks_update(int **matriz, long frame, struct sounds *sound, struct FallingEntity *vet_pedras, int num_pedras, struct player *info, int explosion){
 
 	
+
+	
+	if(info->alive == false)
+		return;
+
+
+
 	//Quando todas as pedras explodirem elas devem se tornar VAZIO
-	if(explosion == 4 && matriz[vet_pedras[0].i][vet_pedras[0].j] != VAZIO){
+	if(explosion == 4 && matriz[vet_pedras[0].i][vet_pedras[0].j] == EXPLOSION){
 		all_rocks_go_empty(matriz, vet_pedras, num_pedras);
 		return;
 	}
-
 
 
 
@@ -93,7 +99,6 @@ void rocks_update(int **matriz, long frame, struct sounds *sound, struct Falling
 	if(frame % 10 != 0 || matriz[vet_pedras[0].i][vet_pedras[0].j] == VAZIO)
 		return;
 
-	
 	
 	
 	
@@ -203,11 +208,10 @@ void rocks_update(int **matriz, long frame, struct sounds *sound, struct Falling
 
 
 void diamantes_update(int **matriz, long frame, struct sounds* sound, struct FallingEntity* vet_dima, int num_diamantes, struct player *info){
-
 	
 	
 	
-	if(frame % 10 != 0)
+	if(frame % 10 != 0 || info->alive == false)
 		return;
 
 
@@ -484,20 +488,20 @@ void time_update(int *time, long frame, int **matriz, struct player *info, struc
 //Funcao que atualiza frame da explosao
 int explosionframe_update(int explosionframe, long frame, int **matriz, struct player *info, struct FallingEntity *pedras){
 	
-	
+
 	//Quando terminar a explosao do player que morreu, acaba o programa e seta player como morto
 	if(explosionframe == 5  && matriz[info->i][info->j] == EXPLOSION){
 		
 		info->alive = 0;
 		
-		return 4;
+		return explosionframe - 1;
 	}
 
 
 
 	//Quando cheat e ativado entao nao e necessario setar player como morto
 	if(explosionframe == 5)
-		return 4;
+		return explosionframe - 1;
 
 
 
@@ -512,7 +516,7 @@ int explosionframe_update(int explosionframe, long frame, int **matriz, struct p
 
 
 	//Atualizacao de frame de explosao quando o cheat e ativado
-	if(matriz[pedras[0].i][pedras[0].j] == EXPLOSION && frame % 5 ==0)
+	if(matriz[pedras[0].i][pedras[0].j] == EXPLOSION && frame % 5 == 0 )
 		explosionframe++;
 
 
@@ -540,7 +544,8 @@ int player_update(int **matriz, unsigned char *key, struct player* info, long fr
 	info->direcao = STOPPED;
 	
 
-
+	if(info->alive == false)
+		return 0;
 
 	//Atualizacao da tile do rockford de frente
 	if(frame % 7 == 0)
