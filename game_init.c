@@ -179,7 +179,7 @@ void inicia_mapa(int** matriz){
 	
 	FILE* arq;
 
-	arq = fopen("resources/map.txt", "r");
+	arq = fopen("resources/map2.txt", "r");
 	if(!arq){
 		printf("Erro ao abrir o arquivo de mapa\n");
 		exit(1);

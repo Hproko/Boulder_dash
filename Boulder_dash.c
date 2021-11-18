@@ -36,29 +36,43 @@ void menu(){
 	must_init(al_init(), "allegro");
 	must_init(al_install_keyboard(), "keyboard");
 
+
+
 	//inicia addon de audio
 	inicia_audio();
 	
+
+
 	//Inicia display e buffer
 	disp = NULL;
 	buffer = NULL;
 	inicia_display(&disp, &buffer);
 	
+
+
 	//Carrega samples na estrutura de sons
 	sound_init(&sound);
 	ALLEGRO_SAMPLE_ID menu_sound;
 	al_play_sample(sound.menu_music, 1.0, 0.0, 1.0, ALLEGRO_PLAYMODE_LOOP, &menu_sound );
+
+
 
 	//inicia addon de ttf e carrega fonte
 	must_init(al_init_font_addon(), "font addon");
 	must_init(al_init_ttf_addon(),"ttf addon");
 	ALLEGRO_FONT* font = al_load_ttf_font("resources/menu.ttf", 20, ALLEGRO_TTF_NO_KERNING);
 
+
+
 	//inicia addon de imagem e carrega sprites na estrutura de imagens
 	must_init(al_init_image_addon(), "image addon");
 	sprites_init(&sprites);
 
+
+
 	ALLEGRO_EVENT event;
+
+
 
 	//inicia event queue
 	ALLEGRO_EVENT_QUEUE* queue = al_create_event_queue();
@@ -66,8 +80,12 @@ void menu(){
 	al_register_event_source(queue, al_get_keyboard_event_source());
 	al_register_event_source(queue, al_get_display_event_source(disp));
 
+
+
+
 	while(state == MENU){
 	
+		//Desenha o menu de inicio do jogo
 		disp_pre_draw(buffer);
 		draw_menu(font);
 		disp_post_draw(disp, buffer);
@@ -99,7 +117,7 @@ void menu(){
 }
 
 
-int main_loop(){
+void main_loop(){
 		
 
 
@@ -227,7 +245,7 @@ int main_loop(){
 				if(! help_page && ! done){
 				
 				
-					
+					//Atualizacao do jogo
  
 					rocks_update(matrizprincipal, frames, &sound, vet_pedras, num_pedras, &info, explosionframes);
 					
@@ -354,28 +372,41 @@ int main_loop(){
 	al_destroy_timer(timer);
 	al_destroy_event_queue(queue);
 
-	return 0;
 }
+
+
 
 
 
 
 void win(){
 	
+
+	//Teclado do allegro
 	unsigned char key[ALLEGRO_KEY_MAX];
 	memset(key, 0, ALLEGRO_KEY_MAX);
 
+
+	//Carrega o record do arquivo txt 
 	long record = carrega_record();
 
+
+	//registra novo recorde caso o record tenha sido quebrado
 	if(info.score > record)
 		new_record(info.score);
 
+
+	//Carrega fonte
 	ALLEGRO_FONT* font;
 	font = al_load_ttf_font("resources/classic.ttf", 30, ALLEGRO_TTF_NO_KERNING);
 	must_init(font, "font win");
 
+
+
 	ALLEGRO_EVENT_QUEUE* queue = al_create_event_queue();
 	must_init(queue, "queue win");
+
+
 
 	ALLEGRO_EVENT event;
 	
@@ -383,14 +414,19 @@ void win(){
 
 	al_register_event_source(queue, al_get_keyboard_event_source());
 
+	
+	
 	while(state == WIN){
+		
 
+		//Desenha tela de resultado do jogo
 		disp_pre_draw(buffer);
 		draw_game_result(font, info.score, record);
 		disp_post_draw(disp, buffer);
 		al_flip_display();
 				
 		al_wait_for_event(queue, &event);
+
 
 		switch(event.type){
 			case ALLEGRO_EVENT_DISPLAY_CLOSE:
@@ -422,12 +458,18 @@ void win(){
 	al_destroy_event_queue(queue);
 }
 
+
+
+
+//Se o jogador morreu, loop principal reinicia
 void lose(){
-	sleep(0.7);
+	//sleep(0.7);
 	state = PLAY;
 }
 
 
+
+//Fim do jogo
 void end(){	
 	free_samples(&sound);
 	free_bitmaps(&sprites);

@@ -72,19 +72,24 @@ struct sounds{
 };
 
 
+
+
 //Funcao para teste de inicializacao
 void must_init(bool test, const char *description);
+
+
 
 
 //Inicializa e carrega os audios na estrutura de som
 void sound_init(struct sounds *sound);
 
 
-//ALLEGRO_BITMAP* sprite_grab(ALLEGRO_BITMAP* sheet, int x, int y, int w, int h);
 
 
 //Inicia estrutura de sprites
 void sprites_init(struct sprites *sprites);
+
+
 
 
 //Carrega maior pontuacao de todos os tempos

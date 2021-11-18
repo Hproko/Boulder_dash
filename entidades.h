@@ -21,45 +21,52 @@
 #define EXPLOSION 8
 
 
-
+//entrutura que guarda as informacoes do player
 struct player{
 
-	int i,j;
+	int i,j; 			//Posicao do player na matriz
 
-	int diamantes;
+	int diamantes;  		//Quantidade de diamantes coletados
 	
-	int framefront;
+	int framefront; 		//Indice do vetor de sprites de quando o personagem esta de frente
 	
 	int frameleft;
 	
 	int frameright;
 	
-	int direcao;
+	int direcao; 			//Direcao que o personagem esta andando
 
-	int player_cooldown;
+	int player_cooldown; 		// Stamina do personagem
 
-	int alive;
+	bool alive; 			// Flag de player que pode estar morto ou vivo
 
-	long score;
+	long score; 			//Pontuacao
 
-	bool win;
+	bool win; 			//Flag se o player venceu
 };
 
 
 
-struct FallingEntity{
 
-	int i,j;
+
+//Estrutura que pode guardar pedras ou diamantes (Usadas para entidades que caem) 
+struct FallingEntity{ 
+
+	int i,j; 			//Posicao da entidade na matriz
 	
-	int falling;
+	bool falling; 			//Flag que diz se a entidade esta caindo ou nao
 
 };
 
 
 
 
+
+//Estrutura que guarda a posicao do portal, usada para abrir o portal quando o jogador coletar os diamantes
 struct portal{
-	int i, j;
-	int portal_open_frames;
+	
+	int i, j; 			//Posicao na matriz
+	
+	int portal_open_frames; 	//Indice do vetor de sprites do portal
 };
 
