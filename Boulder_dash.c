@@ -10,7 +10,9 @@
 #include <allegro5/allegro_acodec.h>
 #include <allegro5/allegro_image.h>
 #include <allegro5/allegro_ttf.h>
-#include "loadstuff.h"
+
+
+#include "load_files.h"
 #include "entidades.h"
 #include "utils_boulderdash.h"
 #include "gameupdate.h"
@@ -249,12 +251,13 @@ void main_loop(){
  
 					rocks_update(matrizprincipal, frames, &sound, vet_pedras, num_pedras, &info, explosionframes);
 					
+					diamantes_update(matrizprincipal, frames, &sound, vet_diamantes, num_diamantes, &info);
+
 					if(player_update(matrizprincipal, key, &info, frames, vet_pedras, num_pedras, &sound, vet_diamantes, num_diamantes))
 						state = WIN;
-					
-					diamantes_update(matrizprincipal, frames, &sound, vet_diamantes, num_diamantes, &info);                     
+					                     
 				
-					portalframes = portalframe_update(frames, &info, portalframes, matrizprincipal, &coord_portal, &sound);
+					portalframes = portalframe_update(frames, &info, portalframes, matrizprincipal, &coord_portal, &sound, num_diamantes);
 						
 					diamondframe = diamondframe_update(diamondframe, frames);
 				

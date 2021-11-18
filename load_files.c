@@ -12,7 +12,7 @@
 #include <allegro5/allegro_acodec.h>
 #include <allegro5/allegro_image.h>
 
-#include "loadstuff.h"
+#include "load_files.h"
 
 
 

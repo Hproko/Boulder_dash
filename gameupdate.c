@@ -9,7 +9,8 @@
 #include <allegro5/allegro_audio.h>
 #include <allegro5/allegro_acodec.h>
 #include <allegro5/allegro_image.h>
-#include "loadstuff.h"
+
+#include "load_files.h"
 #include "entidades.h"
 #include "utils_boulderdash.h"
 #include "gameupdate.h"
@@ -79,7 +80,7 @@ void all_rocks_go_empty(int **matriz, struct FallingEntity *pedras, int num_pedr
 //Atualizacao da posicao das pedras a cada frame
 void rocks_update(int **matriz, long frame, struct sounds *sound, struct FallingEntity *vet_pedras, int num_pedras, struct player *info, int explosion){
 
-	
+	int x, y;
 
 	
 	if(info->alive == false)
@@ -106,10 +107,13 @@ void rocks_update(int **matriz, long frame, struct sounds *sound, struct Falling
 	//Testa todo o vetor de pedras
 	for(int i=0;i<num_pedras;i++){
 		
+		//Guarda coordenada da pedra
+		x = vet_pedras[i].i;
 
+		y = vet_pedras[i].j;
 
 		//Testa se a pedra cai em cima do jogador
-		if(matriz[vet_pedras[i].i+1][vet_pedras[i].j] == PLAYER && vet_pedras[i].falling){
+		if(matriz[x+1][y] == PLAYER && vet_pedras[i].falling){
 				kaboom(matriz, info, sound);
 				return;
 		}
@@ -119,10 +123,10 @@ void rocks_update(int **matriz, long frame, struct sounds *sound, struct Falling
 
 
 		//Se embaixo da pedra esta vazio a pedra cai
-		if(isVazio(matriz, vet_pedras[i].i+1, vet_pedras[i].j)){
+		if(isVazio(matriz, x+1, y)){
 
-			matriz[vet_pedras[i].i+1][vet_pedras[i].j] = ROCK;
-			matriz[vet_pedras[i].i][vet_pedras[i].j] = VAZIO;
+			matriz[x+1][y] = ROCK;
+			matriz[x][y] = VAZIO;
 			
 			vet_pedras[i].i++;
 			vet_pedras[i].falling = 1;
@@ -134,15 +138,15 @@ void rocks_update(int **matriz, long frame, struct sounds *sound, struct Falling
 
 	
 		//Testando qual entidade tem embaixo da pedra, se houver diamante, pedra ou tijolo testa se tem espaco para cair
-		if(matriz[vet_pedras[i].i+1][vet_pedras[i].j] == DIAMANTE || matriz[vet_pedras[i].i+1][vet_pedras[i].j] == ROCK || matriz[vet_pedras[i].i+1][vet_pedras[i].j] == BRICK ){
+		if(matriz[x+1][y] == DIAMANTE || matriz[x+1][y] == ROCK || matriz[x+1][y] == BRICK ){
 
 
 			
 			//se tiver espaco para a direita pedra cai pra direita
-			if(isVazio(matriz, vet_pedras[i].i+1, vet_pedras[i].j+1) && isVazio(matriz, vet_pedras[i].i, vet_pedras[i].j+1)){
+			if(isVazio(matriz, x+1, y+1) && isVazio(matriz, x, y+1)){
 
-				matriz[vet_pedras[i].i+1][vet_pedras[i].j+1] = ROCK;
-				matriz[vet_pedras[i].i][vet_pedras[i].j] = VAZIO; 
+				matriz[x+1][y+1] = ROCK;
+				matriz[x][y] = VAZIO; 
 				
 				vet_pedras[i].i++;
 				vet_pedras[i].j++;
@@ -155,7 +159,7 @@ void rocks_update(int **matriz, long frame, struct sounds *sound, struct Falling
 	
 
 			//Testa se a pedra escorregou para a direita e caiu sobre o jogador
-			if(matriz[vet_pedras[i].i+1][vet_pedras[i].j+1] == PLAYER && vet_pedras[i].falling && isVazio(matriz, vet_pedras[i].i, vet_pedras[i].j+1)){
+			if(matriz[x+1][y+1] == PLAYER && vet_pedras[i].falling && isVazio(matriz, x, y+1)){
 				
 				kaboom(matriz, info, sound);
 				
@@ -166,10 +170,10 @@ void rocks_update(int **matriz, long frame, struct sounds *sound, struct Falling
 
 
 			//se tives espaco para esquerda pedra cai pra esquerda
-			if(isVazio(matriz, vet_pedras[i].i+1, vet_pedras[i].j-1) && isVazio(matriz, vet_pedras[i].i, vet_pedras[i].j-1)){
+			if(isVazio(matriz, x+1, y-1) && isVazio(matriz, x, y-1)){
 
-				matriz[vet_pedras[i].i+1][vet_pedras[i].j-1] = ROCK;
-				matriz[vet_pedras[i].i][vet_pedras[i].j] = VAZIO;
+				matriz[x+1][y-1] = ROCK;
+				matriz[x][y] = VAZIO;
 				
 				vet_pedras[i].i++;
 				vet_pedras[i].j--;
@@ -182,7 +186,7 @@ void rocks_update(int **matriz, long frame, struct sounds *sound, struct Falling
 
 
 			//Testa se a pedra escorregou para a esquerda e caiu sobre a cabeca do jogador
-			if(matriz[vet_pedras[i].i+1][vet_pedras[i].j-1] == PLAYER && vet_pedras[i].falling && isVazio(matriz,vet_pedras[i].i, vet_pedras[i].j-1)){
+			if(matriz[x+1][y-1] == PLAYER && vet_pedras[i].falling && isVazio(matriz, x, y-1)){
 				kaboom(matriz,info, sound);
 				return;
 			}
@@ -210,6 +214,8 @@ void rocks_update(int **matriz, long frame, struct sounds *sound, struct Falling
 void diamantes_update(int **matriz, long frame, struct sounds* sound, struct FallingEntity* vet_dima, int num_diamantes, struct player *info){
 	
 	
+	int pos_i, pos_j;
+		
 	
 	if(frame % 10 != 0 || info->alive == false)
 		return;
@@ -222,10 +228,13 @@ void diamantes_update(int **matriz, long frame, struct sounds* sound, struct Fal
 	//Testa todo o vetor de diamantes  
 	for(int i=0;i<num_diamantes;i++){
 
-		
-		
+		//Guarda coordenada do diamante 
+		pos_i = vet_dima[i].i;
+
+		pos_j = vet_dima[i].j;
+
 		//Testando se o diamante caiu sobre o personagem
-		if(matriz[vet_dima[i].i+1][vet_dima[i].j] == PLAYER && vet_dima[i].falling){
+		if(matriz[pos_i+1][pos_j] == PLAYER && vet_dima[i].falling){
 				
 			kaboom(matriz, info, sound);
 				
@@ -237,10 +246,10 @@ void diamantes_update(int **matriz, long frame, struct sounds* sound, struct Fal
 
 
 		//Se embaixo do diamantes esta vazio
-		if(isVazio(matriz, vet_dima[i].i+1, vet_dima[i].j)){
+		if(isVazio(matriz, pos_i+1, pos_j)){
 
-			matriz[vet_dima[i].i+1][vet_dima[i].j] = DIAMANTE;
-			matriz[vet_dima[i].i][vet_dima[i].j] = VAZIO;
+			matriz[pos_i+1][pos_j] = DIAMANTE;
+			matriz[pos_i][pos_j] = VAZIO;
 			
 			vet_dima[i].i++;
 			
@@ -252,15 +261,15 @@ void diamantes_update(int **matriz, long frame, struct sounds* sound, struct Fal
 
 
 		//Testa se diamante deve cair para esquerda ou para a direita
-		if(matriz[vet_dima[i].i+1][vet_dima[i].j] == DIAMANTE || matriz[vet_dima[i].i+1][vet_dima[i].j] == ROCK || matriz[vet_dima[i].i+1][vet_dima[i].j] == BRICK ){
+		if(matriz[pos_i+1][pos_j] == DIAMANTE || matriz[pos_i+1][pos_j] == ROCK || matriz[pos_i+1][pos_j] == BRICK ){
 
 			
 			
 			//se tiver espaco para a direita diamante cai pra direita
-			if(isVazio(matriz, vet_dima[i].i+1, vet_dima[i].j+1) && isVazio(matriz, vet_dima[i].i, vet_dima[i].j+1)){
+			if(isVazio(matriz, pos_i+1, pos_j+1) && isVazio(matriz, pos_i, pos_j+1)){
 
-				matriz[vet_dima[i].i+1][vet_dima[i].j+1] = DIAMANTE;
-				matriz[vet_dima[i].i][vet_dima[i].j] = VAZIO; 
+				matriz[pos_i+1][pos_j+1] = DIAMANTE;
+				matriz[pos_i][pos_j] = VAZIO; 
 				
 				vet_dima[i].i++;
 				vet_dima[i].j++;
@@ -274,7 +283,7 @@ void diamantes_update(int **matriz, long frame, struct sounds* sound, struct Fal
 
 
 			//Testa se o diamante rolou para a direita e caiu sobre o player
-			if(matriz[vet_dima[i].i+1][vet_dima[i].j+1] == PLAYER && vet_dima[i].falling && isVazio(matriz, vet_dima[i].i, vet_dima[i].j+1)){
+			if(matriz[pos_i+1][pos_j+1] == PLAYER && vet_dima[i].falling && isVazio(matriz, pos_i, pos_j+1)){
 				
 				kaboom(matriz, info, sound);
 				
@@ -285,10 +294,10 @@ void diamantes_update(int **matriz, long frame, struct sounds* sound, struct Fal
 
 
 			//se tives espaco para esquerda diamante cai pra esquerda
-			if(isVazio(matriz, vet_dima[i].i+1, vet_dima[i].j-1) && isVazio(matriz, vet_dima[i].i, vet_dima[i].j-1)){
+			if(isVazio(matriz, pos_i+1, pos_j-1) && isVazio(matriz, pos_i, pos_j-1)){
 
-				matriz[vet_dima[i].i+1][vet_dima[i].j-1] = DIAMANTE;
-				matriz[vet_dima[i].i][vet_dima[i].j] = VAZIO;
+				matriz[pos_i+1][pos_j-1] = DIAMANTE;
+				matriz[pos_i][pos_j] = VAZIO;
 				
 				vet_dima[i].i++;
 				vet_dima[i].j--;
@@ -301,7 +310,7 @@ void diamantes_update(int **matriz, long frame, struct sounds* sound, struct Fal
 			
 			
 			//Testando se o diamante rolou para a esquerda e caiu sobre o personagem
-			if(matriz[vet_dima[i].i+1][vet_dima[i].j-1] == PLAYER && vet_dima[i].falling && isVazio(matriz, vet_dima[i].i, vet_dima[i].j-1)){
+			if(matriz[pos_i+1][pos_j-1] == PLAYER && vet_dima[i].falling && isVazio(matriz, pos_i, pos_j-1)){
 				
 				kaboom(matriz,info,sound);
 				
@@ -344,42 +353,45 @@ int eh_destrutivel(int **matriz, int i, int j){
 //Funcao que explode o player e ao redor
 void kaboom(int **matriz, struct player *info, struct sounds* sound){
 	
+	int pos_i = info->i;
+	int pos_j = info->j;
+	
 	al_play_sample(sound->explosion, 1.0, 0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);
 
-	if(eh_destrutivel(matriz, info->i, info->j))
-		matriz[info->i][info->j] = EXPLOSION;
+	if(eh_destrutivel(matriz, pos_i, pos_j))
+		matriz[pos_i][pos_j] = EXPLOSION;
 
 
-	if(eh_destrutivel(matriz, info->i-1, info->j))
-		matriz[info->i-1][info->j] = EXPLOSION;
+	if(eh_destrutivel(matriz, pos_i-1, pos_j))
+		matriz[pos_i-1][pos_j] = EXPLOSION;
 
 
-	if(eh_destrutivel(matriz, info->i-1, info->j+1))
-		matriz[info->i-1][info->j+1] = EXPLOSION;
+	if(eh_destrutivel(matriz, pos_i-1, pos_j+1))
+		matriz[pos_i-1][pos_j+1] = EXPLOSION;
 
 
-	if(eh_destrutivel(matriz, info->i, info->j+1))
-		matriz[info->i][info->j+1] = EXPLOSION;
+	if(eh_destrutivel(matriz, pos_i, pos_j+1))
+		matriz[pos_i][pos_j+1] = EXPLOSION;
 
 
-	if(eh_destrutivel(matriz, info->i+1, info->j+1))
-		matriz[info->i+1][info->j+1] = EXPLOSION;
+	if(eh_destrutivel(matriz, pos_i+1, pos_j+1))
+		matriz[pos_i+1][pos_j+1] = EXPLOSION;
 
 
-	if(eh_destrutivel(matriz, info->i+1, info->j))
-		matriz[info->i+1][info->j] = EXPLOSION;
+	if(eh_destrutivel(matriz, pos_i+1, pos_j))
+		matriz[pos_i+1][pos_j] = EXPLOSION;
 
 
-	if(eh_destrutivel(matriz, info->i+1, info->j-1))
-		matriz[info->i+1][info->j-1] = EXPLOSION;
+	if(eh_destrutivel(matriz, pos_i+1, pos_j-1))
+		matriz[pos_i+1][pos_j-1] = EXPLOSION;
 
 
-	if(eh_destrutivel(matriz, info->i, info->j-1))
-		matriz[info->i][info->j-1] = EXPLOSION;
+	if(eh_destrutivel(matriz, pos_i, pos_j-1))
+		matriz[pos_i][pos_j-1] = EXPLOSION;
 
 
-	if(eh_destrutivel(matriz, info->i-1, info->j-1))
-		matriz[info->i-1][info->j-1] = EXPLOSION;
+	if(eh_destrutivel(matriz, pos_i-1, pos_j-1))
+		matriz[pos_i-1][pos_j-1] = EXPLOSION;
 	
 }
 
@@ -390,8 +402,11 @@ void kaboom(int **matriz, struct player *info, struct sounds* sound){
 
 
 //Funcao que atualiza o frame do portal
-int portalframe_update(long frame, struct player *info, int portalframe, int **matriz, struct portal *coord_portal, struct sounds *sound){
+int portalframe_update(long frame, struct player *info, int portalframe, int **matriz, struct portal *coord_portal, struct sounds *sound, int num_diamantes){
 	
+
+	int portal_i = coord_portal->i;
+	int portal_j = coord_portal->j;
 
 	if(frame % 15 != 0)
 		return portalframe;
@@ -415,9 +430,9 @@ int portalframe_update(long frame, struct player *info, int portalframe, int **m
 
 
 	//Quando o player pega 12 diamantes o portal se abre 
-	if(info->diamantes == 12 && matriz[coord_portal->i][coord_portal->j] != PORTAL){
+	if(info->diamantes == num_diamantes && matriz[portal_i][portal_j] != PORTAL && matriz[portal_i][portal_j] != PLAYER){
 		
-		matriz[coord_portal->i][coord_portal->j] = PORTAL;
+		matriz[portal_i][portal_j] = PORTAL;
 		
 		
 		al_play_sample(sound->portal_open, 1.0, 0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);
@@ -466,7 +481,7 @@ int diamondframe_update(int diamondframe, long frame){
 //Atualiza o tempo e caso o player tenha vencido, para de atualizar
 void time_update(int *time, long frame, int **matriz, struct player *info, struct sounds* sound){
 	
-	if(info->win)
+	if(info->win || matriz[info->i][info->j] == EXPLOSION)
 		return;
 
 	if(*time > 0)

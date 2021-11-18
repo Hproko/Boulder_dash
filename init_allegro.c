@@ -9,8 +9,9 @@
 #include <allegro5/allegro_audio.h>
 #include <allegro5/allegro_acodec.h>
 #include <allegro5/allegro_image.h>
+
 #include "init_allegro.h"
-#include "loadstuff.h"
+#include "load_files.h"
 
 
 

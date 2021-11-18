@@ -13,7 +13,7 @@
 #include <allegro5/allegro_audio.h>
 #include <allegro5/allegro_acodec.h>
 #include <allegro5/allegro_image.h>
-#include "loadstuff.h"
+#include "load_files.h"
 #include "entidades.h"
 #include "utils_boulderdash.h"
 #include "gameupdate.h"

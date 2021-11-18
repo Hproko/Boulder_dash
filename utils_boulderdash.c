@@ -9,14 +9,14 @@
 #include <allegro5/allegro_audio.h>
 #include <allegro5/allegro_acodec.h>
 #include <allegro5/allegro_image.h>
-#include "loadstuff.h"
+#include "load_files.h"
 #include "entidades.h"
 #include "utils_boulderdash.h"
 #include "init_allegro.h"
 
 
 
-//Mantem o teclado atualizado para cada evento acontecer o mais rapido possivel
+//Mantem o teclado atualizado para desativar as teclas que foram pressionadas
 void keyboard_update(ALLEGRO_EVENT* event, unsigned char *key){
 
 	switch(event->type){

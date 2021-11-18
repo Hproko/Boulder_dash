@@ -13,7 +13,7 @@ int player_update(int **matriz, unsigned char *key, struct player* info, long fr
 
 
 //Atualiza frame do portal e tambem abre o portal caso o jogador tenha coletado 12 diamantes
-int portalframe_update(long frame, struct player *info, int portalframe, int **matriz,  struct portal *coord_portal, struct sounds *sound);
+int portalframe_update(long frame, struct player *info, int portalframe, int **matriz,  struct portal *coord_portal, struct sounds *sound, int num_diamantes);
 
 
 
